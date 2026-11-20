@@ -1,0 +1,67 @@
+import { Component } from '@angular/core';
+
+@Component({
+  selector: 'app-rules',
+  standalone: true,
+  template: `
+    <section class="card rules">
+      <h2>ICC rules built into this scorer</h2>
+
+      <h3>Runs and extras</h3>
+      <ul>
+        <li><strong>Wide</strong>: 1 penalty run plus any runs run; not a legal ball, not faced by the batter, charged to the bowler. A wide that reaches the boundary scores 5.</li>
+        <li><strong>No-ball</strong>: 1 penalty run plus runs off the bat (to the batter) or byes / leg-byes (to extras); not a legal ball; charged to the bowler.</li>
+        <li><strong>Byes and leg-byes</strong>: extras only. Not charged to the bowler, not credited to the batter.</li>
+        <li><strong>Penalty runs</strong>: 5 runs added as penalty extras.</li>
+        <li>Batters change ends on odd runs (not on boundaries) and at the end of every over.</li>
+      </ul>
+
+      <h3>Free hit (T20, ODI, custom overs)</h3>
+      <ul>
+        <li>The ball after a no-ball is a free hit. Wides do not use it up; another no-ball gives another free hit.</li>
+        <li>On a free hit the batter can only be out run out or obstructing the field.</li>
+      </ul>
+
+      <h3>Dismissals</h3>
+      <ul>
+        <li>Bowled, caught, lbw, stumped and hit wicket credit the bowler and need the striker as the batter out.</li>
+        <li>Run out and obstructing the field are not credited to the bowler; either batter can be out.</li>
+        <li>On a wide: only run out, stumped, hit wicket, obstructing. On a no-ball, bye or leg-bye: only run out or obstructing.</li>
+        <li>Retired hurt (can return, not a wicket), retired out, and timed out (new batter not ready in time).</li>
+        <li>A caught batter is replaced at the striker's end (batters do not cross).</li>
+      </ul>
+
+      <h3>Players and extra players</h3>
+      <ul>
+        <li>Up to 13 players a side. An innings ends when all but one of them are out (10 wickets for 11 a side, 12 for 13).</li>
+        <li>Up to 2 extra players per side. They only field: they can take catches and run people out, but cannot bat or bowl.</li>
+      </ul>
+
+      <h3>Bowlers</h3>
+      <ul>
+        <li>No bowler may bowl two consecutive overs.</li>
+        <li>Limited overs: a bowler may bowl at most one-fifth of the innings (T20: 4, ODI: 10, rounded up for custom lengths). Super Over: 1 over. Tests: no limit.</li>
+      </ul>
+
+      <h3>Powerplay (fielding restrictions)</h3>
+      <ul>
+        <li>T20: overs 1-6 maximum 2 fielders outside the 30-yard circle, then 5.</li>
+        <li>ODI: overs 1-10 (2 outside), 11-40 (4 outside), 41-50 (5 outside). Other lengths are scaled proportionally.</li>
+      </ul>
+
+      <h3>Test matches</h3>
+      <ul>
+        <li>Up to 5 days, minimum 90 overs per day, no overs limit per innings, declarations allowed, new ball available after 80 overs.</li>
+        <li>Follow-on offered when the first-innings lead is 200 (5+ days), 150 (3-4 days), 100 (2 days) or 75 (1 day).</li>
+        <li>Results: win by runs, wickets, or an innings and runs; tie; draw (close of play or days used up).</li>
+      </ul>
+
+      <h3>Results</h3>
+      <ul>
+        <li>Won by runs or wickets. Scores level in limited overs goes to a Super Over (1 over each, 2 wickets); repeated until there is a winner.</li>
+        <li>Rain or other interruptions: enter the revised overs and DLS target from your official DLS calculator under "More actions". The scorer does not calculate DLS itself.</li>
+      </ul>
+    </section>
+  `,
+})
+export class RulesComponent {}
