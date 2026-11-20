@@ -1,0 +1,77 @@
+:host {
+  display: block;
+}
+
+.bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.tools {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+
+  button,
+  .btn {
+    min-height: 38px;
+    padding: 6px 12px;
+    font-size: 0.9rem;
+  }
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: #fff;
+  color: var(--text);
+  text-decoration: none;
+
+  &:hover {
+    border-color: var(--ink);
+  }
+}
+
+.status {
+  font-size: 0.9rem;
+  color: var(--muted);
+  min-height: 1.4em;
+
+  &[data-status='error'],
+  &[data-status='conflict'] {
+    color: var(--cherry);
+    font-weight: 600;
+  }
+}
+
+// The Score / Scorecard switch uses links, styled like the segmented buttons
+.views {
+  margin-bottom: 14px;
+
+  a {
+    flex: 1;
+    text-align: center;
+    padding: 9px 6px;
+    border-radius: 9px;
+    font-weight: 600;
+    text-decoration: none;
+    color: var(--text);
+
+    &.on {
+      background: var(--ink);
+      color: #fff;
+    }
+  }
+}
+
+.error button {
+  margin-left: 8px;
+  min-height: 34px;
+  padding: 4px 12px;
+}

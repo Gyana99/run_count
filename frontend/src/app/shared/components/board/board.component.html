@@ -1,0 +1,86 @@
+@let st = match();
+@let i = inn();
+@let sm = sum();
+
+<section class="board" [class.freehit]="freeHit()">
+  @if (showHead()) {
+    <div class="board-head">
+    <h2>{{ st.setup.title }}</h2>
+    @if (st.setup.venue) {
+      <span>{{ st.setup.venue }}</span>
+    }
+    <span>{{ formatLabel() }}</span>
+  </div>
+    }
+
+  <div class="board-face">
+    <div class="who">
+      <span class="team">{{ st.setup.teams[i.battingTeam].name }}</span>
+      <span class="inn">{{ i.label }}</span>
+    </div>
+    <div class="tiles" role="img" [attr.aria-label]="sm.runs + ' for ' + sm.wickets">
+      @for (c of runTiles(); track $index) {
+        <span class="tile">{{ c }}</span>
+      }
+      <span class="slash">/</span>
+      <span class="tile wkt">{{ sm.wickets }}</span>
+    </div>
+    <div class="overs">
+      <strong>{{ sm.overs }}</strong>
+      <span>@if (i.oversLimit) {of {{ i.oversLimit }} }overs</span>
+    </div>
+  </div>
+
+  <dl class="figures">
+    <div><dt>Run rate</dt><dd>{{ sm.runRate.toFixed(2) }}</dd></div>
+    @if (i.target !== null) {
+      <div><dt>Target</dt><dd>{{ i.target }}</dd></div>
+      <div>
+        <dt>Need</dt>
+        <dd>{{ Math.max(i.target - sm.runs, 0) }}@if (i.oversLimit) {<small> off {{ ballsLeft() }}</small>}</dd>
+      </div>
+      @if (i.oversLimit && ballsLeft() > 0) {
+        <div><dt>Required rate</dt><dd>{{ (Math.max(i.target - sm.runs, 0) / ballsLeft() * 6).toFixed(2) }}</dd></div>
+      }
+    }
+    @if (isTest()) {
+      <div><dt>Day</dt><dd>{{ st.day }} of {{ st.setup.days }}</dd></div>
+      <div><dt>Overs today</dt><dd>{{ todayOvers() }}</dd></div>
+      <div><dt>Position</dt><dd>{{ position() }}</dd></div>
+    }
+  </dl>
+
+
+  @if (showOver()) {
+    <div class="over live-over">
+      <span class="over-no">Over {{ Math.floor(sm.legalBalls / 6) + 1 }}</span>
+      <ol class="balls" aria-label="Balls in this over">
+        @for (d of overRow().balls; track d.seq) {
+          <li [class]="'ball ' + ballClass(d)">{{ chip(d) }}</li>
+        }
+        @for (e of overRow().empties; track $index) {
+          <li class="ball empty" aria-hidden="true"></li>
+        }
+      </ol>
+    </div>
+  }
+
+  <ul class="notes">
+    @if (freeHit()) {
+      <li class="hot">Free hit: only a run out can dismiss the batter</li>
+    }
+    @if (restriction(); as r) {
+      <li>{{ r.phase }}: {{ r.maxOutside }} fielders outside the circle</li>
+    }
+    @if (bowlerQuota() !== null) {
+      <li>Each bowler: {{ bowlerQuota() }} overs at most</li>
+    }
+    @if (isTest() && sm.legalBalls >= 480) {
+      <li>New ball available</li>
+    }
+    @if (i.dls) {
+      <li>Revised target (DLS)</li>
+    }
+  </ul>
+  <p class="toss">{{ tossLine() }}</p>
+</section>

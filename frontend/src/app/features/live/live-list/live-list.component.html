@@ -1,0 +1,22 @@
+<section class="head">
+  <h2>Matches</h2>
+  <p class="muted">Pick a match to follow the score ball by ball. This list refreshes on its own.</p>
+</section>
+
+@if (error()) {
+  <p class="error" role="alert">{{ error() }}</p>
+}
+
+@if (loading()) {
+  <p class="muted">Loading matches…</p>
+} @else if (matches().length === 0 && !error()) {
+  <section class="card empty">
+    <h3>No matches yet</h3>
+    <p>When a scorer starts a match, it shows up here.</p>
+    <a routerLink="/scorer">Scorers: log in to start a match</a>
+  </section>
+} @else {
+  @for (m of matches(); track m.id) {
+    <app-match-card [match]="m" [link]="['/live', m.id]" />
+  }
+}

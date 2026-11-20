@@ -1,0 +1,89 @@
+<section class="card">
+  <h2>New match</h2>
+
+  <div class="grid">
+    <label>Match title
+      <input [(ngModel)]="f.title" placeholder="e.g. 1st T20I" />
+    </label>
+    <label>Venue
+      <input [(ngModel)]="f.venue" placeholder="e.g. Eden Gardens, Kolkata" />
+    </label>
+    <label>Date
+      <input type="date" [(ngModel)]="f.date" />
+    </label>
+    <div class="field">
+      <span class="lbl">Match type</span>
+      <div class="seg" role="group" aria-label="Match type">
+        @for (t of formats; track t.v) {
+          <button type="button" [class.on]="f.format === t.v" [attr.aria-pressed]="f.format === t.v" (click)="onFormat(t.v)">{{ t.l }}</button>
+        }
+      </div>
+    </div>
+
+    @if (f.format !== 'TEST') {
+      <label>Overs per innings
+        <input type="number" min="1" max="50" [(ngModel)]="f.oversPerInnings" [disabled]="f.format === 'T20' || f.format === 'ODI'" />
+      </label>
+    } @else {
+      <label>Scheduled days
+        <input type="number" min="1" max="5" [(ngModel)]="f.days" />
+      </label>
+      <label>Overs per day (ICC minimum 90)
+        <input type="number" min="1" max="120" [(ngModel)]="f.oversPerDay" />
+      </label>
+    }
+
+    <label>Players per side (2 to 13)
+      <input type="number" min="2" max="13" [ngModel]="f.playersPerSide" (ngModelChange)="onPlayers($event)" />
+    </label>
+    <label>Extra players, field only (0 to 2)
+      <input type="number" min="0" max="2" [ngModel]="f.extraPlayers" (ngModelChange)="onExtras($event)" />
+    </label>
+  </div>
+</section>
+
+<section class="card">
+  <h2>Teams and players</h2>
+  <div class="teams">
+    @for (t of f.teams; track $index; let ti = $index) {
+      <div class="team">
+        <label>Team {{ ti + 1 }} name
+          <input [(ngModel)]="t.name" />
+        </label>
+        @for (p of t.players; track p.id; let pi = $index) {
+          @if (pi === f.playersPerSide) {
+            <p class="muted extras-note">Extra players can field but cannot bat or bowl.</p>
+          }
+          <label class="player">
+            <span class="n">{{ pi < f.playersPerSide ? pi + 1 : 'S' + (pi - f.playersPerSide + 1) }}</span>
+            <input [(ngModel)]="p.name" [placeholder]="pi < f.playersPerSide ? 'Player ' + (pi + 1) : 'Extra player ' + (pi - f.playersPerSide + 1)" />
+          </label>
+        }
+      </div>
+    }
+  </div>
+</section>
+
+<section class="card">
+  <h2>Toss</h2>
+  <div class="field">
+    <span class="lbl">Who won the toss?</span>
+    <div class="seg" role="group" aria-label="Toss winner">
+      <button type="button" [class.on]="f.tossWinner === 0" [attr.aria-pressed]="f.tossWinner === 0" (click)="f.tossWinner = 0">{{ f.teams[0].name || 'Team 1' }}</button>
+      <button type="button" [class.on]="f.tossWinner === 1" [attr.aria-pressed]="f.tossWinner === 1" (click)="f.tossWinner = 1">{{ f.teams[1].name || 'Team 2' }}</button>
+    </div>
+  </div>
+  <div class="field">
+    <span class="lbl">They chose to</span>
+    <div class="seg" role="group" aria-label="Toss decision">
+      <button type="button" [class.on]="f.tossDecision === 'bat'" [attr.aria-pressed]="f.tossDecision === 'bat'" (click)="f.tossDecision = 'bat'">Bat</button>
+      <button type="button" [class.on]="f.tossDecision === 'bowl'" [attr.aria-pressed]="f.tossDecision === 'bowl'" (click)="f.tossDecision = 'bowl'">Bowl</button>
+    </div>
+  </div>
+  <p class="summary">{{ firstBat() }} bat first. {{ firstBowl() }} bowl first.</p>
+</section>
+
+@if (error) {
+  <p class="error">{{ error }}</p>
+}
+<button class="primary big" type="button" [disabled]="busy" (click)="start()">{{ busy ? 'Starting…' : 'Start match' }}</button>

@@ -1,13 +1,14 @@
-# See https://docs.github.com/get-started/getting-started-with-git/ignoring-files for more about ignoring files.
+
+# See https://docs.github.com/get-started/getting-started-with-git/ignoring-files
 
 # Compiled output
-/dist
-/tmp
-/out-tsc
+dist/
+tmp/
+out-tsc/
 /bazel-out
 
 # Node
-/node_modules
+node_modules/
 npm-debug.log
 yarn-error.log
 
@@ -29,10 +30,11 @@ yarn-error.log
 .history/*
 
 # Miscellaneous
-/.angular/cache
+.angular/
+**/.angular/
 .sass-cache/
 /connect.lock
-/coverage
+coverage/
 /libpeerconnection.log
 testem.log
 /typings
@@ -40,3 +42,7 @@ testem.log
 # System files
 .DS_Store
 Thumbs.db
+
+# Run Count database and secrets
+backend/data/
+backend/.env

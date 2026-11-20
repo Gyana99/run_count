@@ -1,0 +1,40 @@
+// New match form
+:host {
+  display: block;
+}
+
+.teams {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 18px;
+}
+
+.team {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.player {
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+
+  input {
+    flex: 1;
+  }
+  .n {
+    width: 22px;
+    text-align: right;
+    color: var(--muted);
+  }
+}
+
+.extras-note {
+  margin: 6px 0 0;
+}
+
+.summary {
+  margin: 4px 0 0;
+  font-weight: 600;
+}

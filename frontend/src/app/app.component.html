@@ -1,0 +1,28 @@
+<header class="topbar">
+  <a class="brand" routerLink="/live" aria-label="Run Count, all matches">
+    <svg class="mark" viewBox="0 0 32 32" aria-hidden="true">
+      <circle cx="16" cy="16" r="14" fill="#B3202A" />
+      <path d="M5 8c6 3 6 13 0 16M27 8c-6 3-6 13 0 16" fill="none" stroke="#F3E6C8" stroke-width="1.6" stroke-linecap="round" stroke-dasharray="2 2.4" />
+    </svg>
+    <span class="name">Run Count</span>
+  </a>
+
+  <div class="account">
+    @if (auth.user(); as u) {
+      <span class="who">{{ u.username }}</span>
+      <button type="button" (click)="logout()">Log out</button>
+    } @else {
+      <a class="login" routerLink="/login">Scorer log in</a>
+    }
+  </div>
+</header>
+
+<main>
+  <nav class="tabs" aria-label="Sections">
+    <a routerLink="/live" routerLinkActive="on">Matches</a>
+    <a routerLink="/scorer" routerLinkActive="on">Score a match</a>
+    <a routerLink="/rules" routerLinkActive="on">ICC rules</a>
+  </nav>
+
+  <router-outlet />
+</main>

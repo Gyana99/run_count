@@ -1,0 +1,341 @@
+/* Global styles: colour tokens, base elements and the pieces shared by several screens
+   (forms, buttons, panels, segmented control, tables, the over ball row).
+   Anything used by only one component lives in that component's .scss file. */
+
+:root {
+  --ink: #0e1b2c;
+  --ink-2: #1b2d46;
+  --chalk: #e9eeec;
+  --panel: #dfe6e3;
+  --line: #c9d3cf;
+  --text: #13202e;
+  --muted: #566573;
+  --cherry: #b3202a;
+  --straw: #d9b65d;
+  --grass: #2e6b4b;
+  --display: 'Barlow Condensed', 'Arial Narrow', system-ui, sans-serif;
+  --body: 'Barlow', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: var(--body);
+  font-size: 1rem;
+  background: var(--chalk);
+  color: var(--text);
+  line-height: 1.45;
+  font-variant-numeric: tabular-nums;
+}
+
+h2,
+h3 {
+  font-family: var(--display);
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  margin: 0 0 10px;
+}
+h2 {
+  font-size: 1.6rem;
+}
+h3 {
+  font-size: 1.3rem;
+}
+
+a {
+  color: var(--ink);
+}
+
+.muted {
+  color: var(--muted);
+  font-size: 0.92rem;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+:focus-visible {
+  outline: 3px solid var(--straw);
+  outline-offset: 2px;
+}
+
+.error {
+  background: #f8d9db;
+  color: #7c1119;
+  padding: 10px 14px;
+  border-radius: 10px;
+  border-left: 5px solid var(--cherry);
+}
+
+/* Panels: a tinted ground, no outline */
+.card,
+.panel {
+  background: var(--panel);
+  border-radius: 14px;
+  padding: 16px;
+  margin-bottom: 14px;
+}
+
+/* Form controls */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+label {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--muted);
+
+  &.inline {
+    flex-direction: row;
+    align-items: center;
+    gap: 8px;
+
+    input {
+      width: 90px;
+    }
+  }
+}
+
+input,
+select {
+  font: inherit;
+  color: var(--text);
+  padding: 10px 12px;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  min-width: 0;
+  min-height: 44px;
+
+  &[type='number'] {
+    width: 100%;
+  }
+}
+
+.field {
+  margin-bottom: 12px;
+}
+
+.lbl {
+  display: block;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--muted);
+  margin-bottom: 4px;
+}
+
+/* Buttons */
+button {
+  font: inherit;
+  min-height: 44px;
+  padding: 9px 16px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: #fff;
+  color: var(--text);
+  cursor: pointer;
+
+  &:hover:not(:disabled) {
+    border-color: var(--ink);
+  }
+  &:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+
+  &.primary {
+    background: var(--ink);
+    border-color: var(--ink);
+    color: #fff;
+    font-weight: 600;
+
+    &:hover:not(:disabled) {
+      background: var(--ink-2);
+    }
+  }
+
+  &.big {
+    width: 100%;
+    min-height: 56px;
+    font-family: var(--display);
+    font-size: 1.4rem;
+    letter-spacing: 0.02em;
+    border-radius: 14px;
+  }
+}
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  margin: 10px 0;
+}
+
+/* Segmented control */
+.seg {
+  display: flex;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 3px;
+  gap: 3px;
+
+  button {
+    flex: 1;
+    border: 0;
+    background: transparent;
+    border-radius: 9px;
+    padding: 9px 6px;
+    font-weight: 600;
+    white-space: nowrap;
+
+    &.on {
+      background: var(--ink);
+      color: #fff;
+    }
+  }
+
+  &.small button {
+    min-height: 38px;
+    font-size: 0.9rem;
+  }
+}
+
+/* Tables: scorecards and the batter / bowler boxes */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.95rem;
+
+  &.mini {
+    margin-bottom: 8px;
+  }
+}
+
+th {
+  font-weight: 500;
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+
+th,
+td {
+  text-align: right;
+  padding: 7px 6px;
+  border-bottom: 1px solid var(--line);
+  white-space: nowrap;
+
+  &:first-child {
+    text-align: left;
+  }
+  &.muted {
+    text-align: left;
+    white-space: normal;
+  }
+}
+
+tr.on td:first-child {
+  font-weight: 700;
+  box-shadow: inset 4px 0 0 var(--cherry);
+  padding-left: 12px;
+}
+
+.scroll {
+  overflow-x: auto;
+}
+
+/* The over: six ball slots (scorer, scoreboard and live page) */
+.over {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 14px;
+}
+
+.over-no {
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: 1.2rem;
+}
+
+.balls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.ball {
+  display: grid;
+  place-items: center;
+  min-width: 38px;
+  height: 38px;
+  padding: 0 6px;
+  border-radius: 999px;
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: 1.1rem;
+  border: 2px solid var(--ink);
+  background: transparent;
+  color: var(--ink);
+
+  &.run {
+    background: var(--ink);
+    color: #fff;
+  }
+  &.four {
+    background: var(--grass);
+    border-color: var(--grass);
+    color: #fff;
+  }
+  &.six {
+    background: var(--straw);
+    border-color: var(--straw);
+    color: var(--ink);
+  }
+  &.wicket {
+    background: var(--cherry);
+    border-color: var(--cherry);
+    color: #fff;
+  }
+  &.extra {
+    border-style: dashed;
+    border-color: var(--cherry);
+    color: var(--cherry);
+  }
+  &.empty {
+    border: 2px dashed #a7b4b0;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .ball:not(.empty) {
+    animation: drop 0.18s ease-out;
+  }
+  @keyframes drop {
+    from {
+      transform: translateY(-6px) scale(0.85);
+      opacity: 0.4;
+    }
+  }
+}

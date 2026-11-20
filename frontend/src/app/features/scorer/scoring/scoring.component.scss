@@ -1,0 +1,144 @@
+// Live scoring screen: the over, batter boxes, the key pad and the actions.
+:host {
+  display: block;
+}
+
+.lead {
+  font-weight: 600;
+}
+
+.result h2 {
+  color: var(--grass);
+  font-size: 2rem;
+}
+
+details summary {
+  cursor: pointer;
+  font-weight: 600;
+  min-height: 32px;
+}
+
+// The key pad is pinned to the bottom of the screen, within reach of a thumb.
+.pad {
+  position: sticky;
+  bottom: 0;
+  z-index: 5;
+  background: var(--ink);
+  color: #fff;
+  border-radius: 20px 20px 0 0;
+  padding: 12px 12px calc(12px + env(safe-area-inset-bottom));
+  margin: 0 -4px;
+  box-shadow: 0 -10px 24px rgba(14, 27, 44, 0.25);
+
+  .seg {
+    background: #1b2d46;
+    border-color: #2a3d58;
+    margin-bottom: 8px;
+
+    button {
+      color: #d3dde9;
+
+      &.on {
+        background: #fff;
+        color: var(--ink);
+      }
+    }
+  }
+}
+
+.hint {
+  margin: 4px 2px 8px;
+  font-size: 0.85rem;
+  color: #aebccd;
+}
+
+.keys {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+}
+
+.key {
+  min-height: 56px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  padding: 6px 4px;
+  border: 0;
+  border-radius: 14px;
+  background: #233652;
+  color: #fff;
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: 2rem;
+
+  b {
+    font-weight: 700;
+  }
+  small {
+    font-family: var(--body);
+    font-weight: 500;
+    font-size: 0.7rem;
+    margin-top: 3px;
+    opacity: 0.85;
+  }
+
+  &:hover:not(:disabled) {
+    background: #2c4264;
+  }
+  &:active {
+    transform: translateY(1px);
+  }
+
+  &.four {
+    background: var(--grass);
+  }
+  &.six {
+    background: var(--straw);
+    color: var(--ink);
+  }
+  &.wk {
+    grid-column: 1 / -1;
+    min-height: 52px;
+    background: var(--cherry);
+    font-size: 1.5rem;
+    letter-spacing: 0.02em;
+
+    &.on {
+      background: #fff;
+      color: var(--cherry);
+    }
+  }
+}
+
+// How-out form shown above the keys when Wicket is on
+.wform {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+  gap: 8px;
+  margin-bottom: 8px;
+
+  label {
+    color: #aebccd;
+  }
+  .hint {
+    grid-column: 1 / -1;
+    margin: 0;
+  }
+}
+
+// On short phone screens, give the over and the batters more room.
+@media (max-height: 820px) {
+  .pad .hint {
+    display: none;
+  }
+  .pad .wform .hint {
+    display: block;
+  }
+  .key {
+    min-height: 50px;
+    font-size: 1.7rem;
+  }
+}

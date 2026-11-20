@@ -1,0 +1,41 @@
+<section class="card login">
+  <h2>{{ mode() === 'login' ? 'Scorer log in' : 'Create a scorer account' }}</h2>
+  <p class="muted">
+    You need an account to score a match. Anyone can watch scores without one:
+    <a routerLink="/live">see live matches</a>.
+  </p>
+
+  @if (allowRegistration()) {
+    <div class="seg" role="group" aria-label="Log in or create an account">
+      <button type="button" [class.on]="mode() === 'login'" [attr.aria-pressed]="mode() === 'login'" (click)="setMode('login')">Log in</button>
+      <button type="button" [class.on]="mode() === 'register'" [attr.aria-pressed]="mode() === 'register'" (click)="setMode('register')">Create account</button>
+    </div>
+  }
+
+  <form (ngSubmit)="submit()">
+    <label>Username
+      <input name="username" [(ngModel)]="username" autocomplete="username" autocapitalize="none" spellcheck="false" />
+    </label>
+    <label>Password
+      <input
+        name="password"
+        type="password"
+        [(ngModel)]="password"
+        [attr.autocomplete]="mode() === 'login' ? 'current-password' : 'new-password'"
+      />
+    </label>
+    @if (mode() === 'register') {
+      <label>Confirm password
+        <input name="confirm" type="password" [(ngModel)]="confirm" autocomplete="new-password" />
+      </label>
+    }
+
+    @if (error()) {
+      <p class="error" role="alert">{{ error() }}</p>
+    }
+
+    <button class="primary big" type="submit" [disabled]="busy()">
+      {{ busy() ? 'Please wait…' : mode() === 'login' ? 'Log in' : 'Create account' }}
+    </button>
+  </form>
+</section>

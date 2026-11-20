@@ -1,0 +1,18 @@
+// Batting and bowling cards
+:host {
+  display: block;
+}
+
+.resulttext {
+  font-weight: 700;
+  color: var(--grass);
+}
+
+.innings-tabs {
+  flex-wrap: wrap;
+  margin-top: 8px;
+
+  button {
+    white-space: normal;
+  }
+}

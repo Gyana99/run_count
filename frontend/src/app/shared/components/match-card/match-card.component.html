@@ -1,0 +1,28 @@
+@let m = match();
+<article class="mcard">
+  <a class="main" [routerLink]="link()">
+    <div class="top">
+      <h3>{{ m.title }}</h3>
+      <span class="badge" [class.live]="m.status === 'live'">{{ m.status === 'live' ? 'Live' : 'Finished' }}</span>
+    </div>
+    <p class="muted meta">{{ meta() }}</p>
+    <ul class="scores">
+      @for (s of m.summary.scores; track $index) {
+        <li [class.current]="s.current">
+          <span class="team">{{ s.team }}</span>
+          <span class="label">{{ s.label }}</span>
+          <strong>{{ s.runs }}/{{ s.wickets }}</strong>
+          <span class="overs">({{ s.overs }} ov)</span>
+        </li>
+      } @empty {
+        <li class="muted">Not started yet</li>
+      }
+    </ul>
+    @if (m.result) {
+      <p class="result">{{ m.result }}</p>
+    }
+  </a>
+  <div class="actions">
+    <ng-content />
+  </div>
+</article>

@@ -1,0 +1,31 @@
+@if (loadError()) {
+  <p class="error" role="alert">{{ loadError() }}</p>
+  <a routerLink="/scorer">Back to your matches</a>
+} @else if (loading() || !svc.state()) {
+  <p class="muted">Opening the match…</p>
+} @else {
+  <section class="bar">
+    <div class="status" [attr.data-status]="svc.saveStatus()" role="status">{{ saveText() }}</div>
+    <div class="tools">
+      <button type="button" (click)="svc.undo()" [disabled]="!svc.canUndo() || svc.saveStatus() === 'conflict'">Undo last</button>
+      <button type="button" (click)="copyLink()">{{ copied() ? 'Link copied' : 'Copy viewer link' }}</button>
+      <a class="btn" [routerLink]="['/live', id()]" target="_blank" rel="noopener">Viewer page</a>
+    </div>
+  </section>
+
+  <nav class="seg views" aria-label="Scorer pages">
+    <a routerLink="." routerLinkActive="on" [routerLinkActiveOptions]="{ exact: true }">Score</a>
+    <a routerLink="scorecard" routerLinkActive="on">Scorecard</a>
+  </nav>
+
+  @if (svc.error()) {
+    <p class="error" role="alert">
+      {{ svc.error() }}
+      @if (svc.saveStatus() === 'conflict') {
+        <button type="button" (click)="reload()">Reload match</button>
+      }
+    </p>
+  }
+
+  <router-outlet />
+}

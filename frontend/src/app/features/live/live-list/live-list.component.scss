@@ -1,0 +1,19 @@
+:host {
+  display: block;
+}
+
+.head {
+  margin-bottom: 12px;
+
+  h2 {
+    margin-bottom: 2px;
+  }
+  p {
+    margin: 0;
+    max-width: 56ch;
+  }
+}
+
+.empty p {
+  max-width: 52ch;
+}

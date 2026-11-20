@@ -1,0 +1,29 @@
+<section class="head">
+  <div>
+    <h2>Your matches</h2>
+    <p class="muted">Signed in as {{ auth.user()?.username }}</p>
+  </div>
+  <a class="newbtn" routerLink="/scorer/new">New match</a>
+</section>
+
+@if (error()) {
+  <p class="error" role="alert">{{ error() }}</p>
+}
+
+@if (loading()) {
+  <p class="muted">Loading your matches…</p>
+} @else if (matches().length === 0 && !error()) {
+  <section class="card empty">
+    <h3>No matches yet</h3>
+    <p>Start a match to begin scoring. Viewers can follow it live from a link.</p>
+    <a class="newbtn" routerLink="/scorer/new">Start your first match</a>
+  </section>
+} @else {
+  @for (m of matches(); track m.id) {
+    <app-match-card [match]="m" [link]="['/scorer', m.id]">
+      <a class="btn" [routerLink]="['/scorer', m.id]">{{ m.status === 'live' ? 'Continue scoring' : 'Open scorecard' }}</a>
+      <a class="btn" [routerLink]="['/live', m.id]">Viewer page</a>
+      <button type="button" (click)="remove(m)">Delete</button>
+    </app-match-card>
+  }
+}

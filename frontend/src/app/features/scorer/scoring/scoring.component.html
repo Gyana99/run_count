@@ -1,0 +1,247 @@
+@let st = s();
+@let i = inn();
+@let sm = sum();
+
+<app-board [match]="st" />
+
+@if (st.phase === 'finished') {
+  <section class="panel result">
+    <h2>{{ st.result }}</h2>
+    <p class="muted">The match is finished. The Scorecard tab has the full details.</p>
+  </section>
+} @else if (st.pending) {
+  <section class="panel">
+    @if (i.closed) {
+      <p class="lead">
+        {{ i.label }} closed ({{ i.closeReason }}). {{ st.setup.teams[i.battingTeam].name }} made {{ sm.runs }}/{{ sm.wickets }} in {{ sm.overs }} overs.
+      </p>
+    }
+    @switch (st.pending) {
+      @case ('follow-on-choice') {
+        <p>
+          {{ st.setup.teams[st.innings[0].battingTeam].name }} lead by {{ leadAfterFirst() }} runs. The ICC follow-on margin for this match is
+          {{ followOnMargin() }}.
+        </p>
+        <div class="row">
+          <button class="primary" (click)="startNext(true)">Enforce follow-on</button>
+          <button (click)="startNext(false)">Bat again</button>
+        </div>
+      }
+      @case ('super-over') {
+        <p><strong>Scores are level.</strong> Each side plays one over with two wickets. The team that batted second bats first.</p>
+        <div class="row">
+          <button class="primary" (click)="startNext()">Start Super Over</button>
+          <button (click)="declareTie()">Call it a tie</button>
+        </div>
+      }
+      @default {
+        @if (preview(); as p) {
+          <p>Next: {{ p.label }}, {{ p.team }} to bat{{ p.target !== null ? ', target ' + p.target : '' }}.</p>
+        }
+        <button class="primary" (click)="startNext()">Start next innings</button>
+      }
+    }
+  </section>
+} @else {
+  @if (needsOpeners()) {
+    <section class="panel">
+      <h3>Openers and first bowler</h3>
+      <div class="grid">
+        <label>Striker
+          <select (change)="openStriker.set(val($event))">
+            <option value="">Choose…</option>
+            @for (p of batPlayers(); track p.id) {
+              <option [value]="p.id">{{ p.name }}</option>
+            }
+          </select>
+        </label>
+        <label>Non-striker
+          <select (change)="openNon.set(val($event))">
+            <option value="">Choose…</option>
+            @for (p of batPlayers(); track p.id) {
+              <option [value]="p.id">{{ p.name }}</option>
+            }
+          </select>
+        </label>
+        <label>Opening bowler
+          <select (change)="openBowler.set(val($event))">
+            <option value="">Choose…</option>
+            @for (p of bowlerOptions(); track p.id) {
+              <option [value]="p.id">{{ p.name }}</option>
+            }
+          </select>
+        </label>
+      </div>
+      <button class="primary" (click)="confirmOpeners()">Start innings</button>
+    </section>
+  } @else {
+    @if (needsBatter()) {
+      <section class="panel">
+        <h3>A wicket fell: who comes in?</h3>
+        <div class="grid">
+          <label>Next batter
+            <select (change)="nextBatter.set(val($event))">
+              <option value="">Choose…</option>
+              @for (p of batterOptions(); track p.id) {
+                <option [value]="p.id">{{ p.name }}</option>
+              }
+            </select>
+          </label>
+        </div>
+        <div class="row">
+          <button class="primary" (click)="confirmBatter()">Send in</button>
+          <button (click)="markTimedOut()">Timed out</button>
+        </div>
+      </section>
+    } @else if (needsBowler()) {
+      <section class="panel">
+        <h3>Over {{ Math.floor(sm.legalBalls / 6) + 1 }}: who bowls?</h3>
+        <div class="grid">
+          <label>Bowler
+            <select (change)="nextBowler.set(val($event))">
+              <option value="">Choose…</option>
+              @for (p of bowlerOptions(); track p.id) {
+                <option [value]="p.id">{{ p.name }}</option>
+              }
+            </select>
+          </label>
+        </div>
+        <button class="primary" (click)="confirmBowler()">Start over</button>
+      </section>
+    }
+
+    <section class="panel">
+      <div class="over">
+        <span class="over-no">Over {{ Math.floor(sm.legalBalls / 6) + 1 }}</span>
+        <ol class="balls" aria-label="Balls in this over">
+          @for (d of overRow().balls; track d.seq) {
+            <li [class]="'ball ' + ballClass(d)">{{ chip(d) }}</li>
+          }
+          @for (e of overRow().empties; track $index) {
+            <li class="ball empty" aria-hidden="true"></li>
+          }
+        </ol>
+      </div>
+
+      <table class="mini">
+        <thead><tr><th>Batter</th><th>Runs</th><th>Balls</th><th>4s</th><th>6s</th><th>SR</th></tr></thead>
+        <tbody>
+          @for (b of crease(); track b.id) {
+            <tr [class.on]="b.onStrike">
+              <td>{{ b.name }}@if (b.onStrike) {<span class="sr-only"> (on strike)</span>}</td>
+              <td><strong>{{ b.runs }}</strong></td><td>{{ b.balls }}</td><td>{{ b.fours }}</td><td>{{ b.sixes }}</td><td>{{ b.strikeRate.toFixed(0) }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+      <p class="muted">Partnership {{ sm.partnershipRuns }} runs off {{ sm.partnershipBalls }} balls</p>
+      @if (curBowler(); as b) {
+        <table class="mini">
+          <thead><tr><th>Bowler</th><th>Overs</th><th>Maidens</th><th>Runs</th><th>Wkts</th><th>Econ</th></tr></thead>
+          <tbody>
+            <tr><td>{{ b.name }}</td><td>{{ b.overs }}</td><td>{{ b.maidens }}</td><td>{{ b.runs }}</td><td><strong>{{ b.wickets }}</strong></td><td>{{ b.economy.toFixed(1) }}</td></tr>
+          </tbody>
+        </table>
+      }
+    </section>
+
+    <section class="panel">
+      <details>
+        <summary>More actions</summary>
+        <div class="row">
+          <button (click)="penalty()">Add 5 penalty runs</button>
+          @for (b of crease(); track b.id) {
+            <button (click)="retire(b.id, 'hurt')">{{ b.name }} retires hurt</button>
+            <button (click)="retire(b.id, 'out')">{{ b.name }} retired out</button>
+          }
+        </div>
+        @if (isLimited()) {
+          <div class="row">
+            <label class="inline">Revised overs <input type="number" min="1" [value]="revOvers()" (input)="revOvers.set(+val($event))" /></label>
+            @if (i.index === 1) {
+              <label class="inline">Revised target <input type="number" min="1" [value]="revTarget()" (input)="revTarget.set(+val($event))" /></label>
+            }
+            <button (click)="revise()">Apply rain revision</button>
+          </div>
+          <div class="row">
+            <button (click)="closeInn('Innings closed')">End innings now</button>
+          </div>
+        } @else {
+          <div class="row">
+            <button (click)="closeInn('Declared')">Declare innings</button>
+            <button (click)="nextDay()">Close the day's play</button>
+            <button (click)="closeInn('Close of play')">Close of play (draw)</button>
+          </div>
+        }
+        <div class="row">
+          <button (click)="finishMatch('no-result')">Abandon, no result</button>
+          @if (isTest()) {
+            <button (click)="finishMatch('draw')">End as a draw</button>
+          }
+        </div>
+      </details>
+    </section>
+
+    @if (canScore()) {
+      <section class="pad" aria-label="Score this ball">
+        <div class="seg" role="group" aria-label="Type of delivery">
+          @for (e of extraOptions; track e.v) {
+            <button type="button" [class.on]="extra() === e.v" [attr.aria-pressed]="extra() === e.v" (click)="setExtra(e.v)">{{ e.l }}</button>
+          }
+        </div>
+        @if (extra() === 'noball') {
+          <div class="seg small" role="group" aria-label="Where the runs came from">
+            <button type="button" [class.on]="nbSource() === 'bat'" (click)="nbSource.set('bat')">Off the bat</button>
+            <button type="button" [class.on]="nbSource() === 'bye'" (click)="nbSource.set('bye')">Byes</button>
+            <button type="button" [class.on]="nbSource() === 'legbye'" (click)="nbSource.set('legbye')">Leg byes</button>
+          </div>
+        }
+        <p class="hint">{{ hint() }}</p>
+
+        @if (wicketOn()) {
+          <div class="wform">
+            <label>How out
+              <select (change)="wType.set(toType(val($event)))">
+                @for (t of allowed(); track t) {
+                  <option [value]="t" [selected]="t === wType()">{{ t }}</option>
+                }
+              </select>
+            </label>
+            @if (!strikerOnly()) {
+              <label>Batter out
+                <select (change)="wOut.set(val($event))">
+                  <option value="">{{ playerName(st, i.striker) }} (striker)</option>
+                  <option [value]="i.nonStriker ?? ''">{{ playerName(st, i.nonStriker) }} (non-striker)</option>
+                </select>
+              </label>
+            }
+            @if (needsFielder()) {
+              <label>{{ wType() === 'stumped' ? 'Wicket-keeper' : 'Fielder' }}
+                <select (change)="wFielder.set(val($event))">
+                  <option value="">Choose…</option>
+                  @for (p of fielders(); track p.id) {
+                    <option [value]="p.id">{{ p.name }}</option>
+                  }
+                </select>
+              </label>
+            }
+            <p class="hint">Tap the runs completed to record the wicket. Use 0 for most dismissals.</p>
+          </div>
+        }
+
+        <div class="keys">
+          @for (r of [0, 1, 2, 3]; track r) {
+            <button class="key" (click)="score(r)">{{ r }}</button>
+          }
+          <button class="key" (click)="score(4)"><b>4</b><small>ran four</small></button>
+          <button class="key" (click)="score(5)">5</button>
+          <button class="key four" (click)="score(4, true)"><b>4</b><small>boundary</small></button>
+          <button class="key six" (click)="score(6, true)"><b>6</b><small>boundary</small></button>
+          <button class="key wk" [class.on]="wicketOn()" [attr.aria-pressed]="wicketOn()" (click)="toggleWicket()">
+            {{ wicketOn() ? 'Cancel wicket' : 'Wicket' }}
+          </button>
+        </div>
+      </section>
+    }
+  }
+}

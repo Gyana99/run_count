@@ -1,0 +1,207 @@
+// The ground scoreboard: dark board, flip tiles for the score.
+:host {
+  display: block;
+}
+
+.board {
+  background: var(--ink);
+  color: #fff;
+  border-radius: 22px;
+  padding: 18px 18px 14px;
+  margin-bottom: 14px;
+
+  &.freehit {
+    box-shadow: inset 0 0 0 3px var(--straw);
+  }
+
+  // Over balls drawn on the dark board
+  .ball {
+    border-color: #d3dde9;
+    color: #d3dde9;
+
+    &.run {
+      background: #fff;
+      border-color: #fff;
+      color: var(--ink);
+    }
+    &.four {
+      background: var(--grass);
+      border-color: var(--grass);
+      color: #fff;
+    }
+    &.six {
+      background: var(--straw);
+      border-color: var(--straw);
+      color: var(--ink);
+    }
+    &.wicket {
+      background: var(--cherry);
+      border-color: var(--cherry);
+      color: #fff;
+    }
+    &.extra {
+      border-color: var(--straw);
+      color: var(--straw);
+    }
+    &.empty {
+      border-color: #4a5f7a;
+    }
+  }
+  .over-no {
+    color: #fff;
+  }
+  .live-over {
+    margin: 4px 0 0;
+  }
+}
+
+.board-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 2px 14px;
+  color: #aebccd;
+  font-size: 0.92rem;
+
+  h2 {
+    margin: 0;
+    color: #fff;
+    font-size: 1.35rem;
+  }
+}
+
+.board-face {
+  margin-top: 12px;
+}
+
+.who {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 2px 12px;
+
+  .team {
+    font-family: var(--display);
+    font-weight: 700;
+    font-size: 1.8rem;
+    line-height: 1.1;
+  }
+  .inn {
+    color: var(--straw);
+    font-weight: 500;
+  }
+}
+
+.tiles {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 12px 0 8px;
+}
+
+.tile {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: clamp(48px, 15vw, 72px);
+  height: clamp(72px, 22vw, 108px);
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: clamp(3.6rem, 16vw, 5.8rem);
+  line-height: 1;
+  border-radius: 10px;
+  background: linear-gradient(#233652 50%, #1a2b43 50%);
+  color: #fff;
+
+  // the seam of a flip tile
+  &::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 50%;
+    height: 2px;
+    background: #0a1422;
+  }
+
+  &.wkt {
+    color: var(--straw);
+  }
+}
+
+.slash {
+  font-family: var(--display);
+  font-size: 3.4rem;
+  color: #6b7f98;
+  padding: 0 2px;
+}
+
+.overs {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  color: #aebccd;
+
+  strong {
+    font-family: var(--display);
+    font-size: 1.7rem;
+    color: #fff;
+  }
+}
+
+.figures {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 26px;
+  margin: 14px 0 0;
+  padding-top: 12px;
+  border-top: 1px solid #2a3d58;
+
+  dt {
+    font-size: 0.8rem;
+    color: #91a3b8;
+  }
+  dd {
+    margin: 0;
+    font-family: var(--display);
+    font-weight: 600;
+    font-size: 1.5rem;
+    line-height: 1.15;
+
+    small {
+      font-family: var(--body);
+      font-size: 0.85rem;
+      font-weight: 400;
+      color: #aebccd;
+    }
+  }
+}
+
+.notes {
+  list-style: none;
+  margin: 12px 0 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+
+  li {
+    background: #1b2d46;
+    color: #d3dde9;
+    padding: 3px 11px;
+    border-radius: 999px;
+    font-size: 0.85rem;
+
+    &.hot {
+      background: var(--straw);
+      color: var(--ink);
+      font-weight: 600;
+    }
+  }
+}
+
+.toss {
+  margin: 10px 0 0;
+  font-size: 0.85rem;
+  color: #91a3b8;
+}

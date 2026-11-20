@@ -1,0 +1,61 @@
+@let r = record();
+@if (error()) {
+  <p class="error" role="alert">{{ error() }}</p>
+  <a routerLink="/live">See all matches</a>
+} @else if (deleted()) {
+  <section class="card">
+    <h3>This match was removed</h3>
+    <p>The scorer deleted it.</p>
+    <a routerLink="/live">See all matches</a>
+  </section>
+} @else if (r) {
+  <header class="head">
+    <div>
+      <h2>{{ r.title }}</h2>
+      <p class="muted">{{ meta(r) }}</p>
+    </div>
+    <p class="status" [class.live]="r.status === 'live' && connected()" role="status">
+      <span class="dot" [class.off]="!connected() && r.status === 'live'"></span>
+      {{ statusText(r) }}
+    </p>
+  </header>
+
+  @if (r.state.result) {
+    <section class="panel result">
+      <h2>{{ r.state.result }}</h2>
+    </section>
+  }
+
+  <app-board [match]="r.state" [showOver]="r.status === 'live'" [showHead]="false" />
+
+  @if (atCrease(); as c) {
+    <section class="panel">
+      <table class="mini">
+        <thead><tr><th>Batter</th><th>Runs</th><th>Balls</th><th>4s</th><th>6s</th><th>SR</th></tr></thead>
+        <tbody>
+          @for (b of c.batters; track b.id) {
+            <tr [class.on]="b.onStrike">
+              <td>{{ b.name }}@if (b.onStrike) {<span class="sr-only"> (on strike)</span>}</td>
+              <td><strong>{{ b.runs }}</strong></td><td>{{ b.balls }}</td><td>{{ b.fours }}</td><td>{{ b.sixes }}</td><td>{{ b.strikeRate.toFixed(0) }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+      <p class="muted">Partnership {{ c.partnershipRuns }} runs off {{ c.partnershipBalls }} balls</p>
+      @if (c.bowler; as b) {
+        <table class="mini">
+          <thead><tr><th>Bowler</th><th>Overs</th><th>Maidens</th><th>Runs</th><th>Wkts</th><th>Econ</th></tr></thead>
+          <tbody>
+            <tr><td>{{ b.name }}</td><td>{{ b.overs }}</td><td>{{ b.maidens }}</td><td>{{ b.runs }}</td><td><strong>{{ b.wickets }}</strong></td><td>{{ b.economy.toFixed(1) }}</td></tr>
+          </tbody>
+        </table>
+      }
+    </section>
+  }
+
+  <app-scorecard [match]="r.state" [showTitle]="false" />
+
+  <p class="muted updated">Scored by {{ r.ownerName }}. Updated {{ r.updatedAt | date: 'mediumTime' }}.</p>
+} @else {
+  <p class="muted">Loading the match…</p>
+}
